@@ -1,0 +1,44 @@
+ace
+===
+
+A command-line Ethereum development environment.
+
+By Rob Myers <rob@robmyers.org>
+
+Dependencies
+============
+
+Python, pytest, pyethereum.
+
+Serpent for Serpent code compilation.
+
+Installation
+============
+
+sudo python ./setup.py install
+
+Usage
+=====
+
+ace <command> [args]
+
+Commands:
+new <name> - Create a new project directory called 'name'.
+contract <name> - Create a new contract and test using 'name'.
+test [name] - Run name, or all tests in current project if no name.
+compile [name] - Compile name, or all contracts in current project if no name.
+
+Planned Features
+================
+
+Currently, ace supports development and local testing of Serpent code.
+Support for LLL, local testnet testing and live network deployment are planned.
+
+About The Name
+==============
+
+A.C.E was an old general anaesthetic made using ether.
+
+"ace" is an outdated synonym for "excellent".
+
+It's also easy to type.

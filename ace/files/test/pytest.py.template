@@ -1,0 +1,22 @@
+import os
+
+if os.environ['ACE_TEST_DEVELOPMENT']:
+    from ace.developer_test_class import AceTest
+elif os.environ['ACE_TEST_LOCAL_TESTNET']:
+    from ace.testnet_test_class import AceTest
+else:
+    raise "Invalid test environment." 
+    
+class %CLASSNAME%(AceTest):
+    
+    CONTRACT = "%SOURCEFILE%"
+    
+    def setup_method(self, method):
+        self.sim.reset()
+        self.contract = self.sim.load_contract(self.accounts["creator"],
+                                               self.code)
+    
+    def test_do_nothing(self):
+        data = []
+        ans = self.sim.tx(self.accounts["creator"], self.contract, 0, data)
+        assert ans == []

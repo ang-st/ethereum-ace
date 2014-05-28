@@ -1,0 +1,83 @@
+#!/usr/bin/python
+# -*- mode: python; -*-
+# ace - Project development environment for Ethereum code.
+# Copyright (C) 2014  Rob Myers <rob@robmyers.org>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or 
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# As an additional permission under clause 7 of the GPLv3, the
+# contents of the ace/files directory is not covered by the conditions
+# of the GPL. I assume they are too simple to copyright but if this
+# is not the case they are licensed Creative Commons CC0.
+# The intent of this permission is for projects created by ace that
+# include these files to be licensable as the user sees fit. I hope
+# they will choose the AGPL.
+
+import os, sys
+from ace import new_project, new_contract, test_contract, compile_contract
+from ace import project_structure
+
+def usage():
+    print "Usage:"
+    print "  ace <command> [args]"
+    print "Commands:"
+    print "  new <name> - Create a new project directory called 'name'."
+    print "  contract <name> - Create a new contract and test using 'name'."
+    print "  test [name] - Run name, or all tests if name absent.."
+    print "  compile [name] - Compile name, or all contracts if name absent."
+
+def main():
+    if len(sys.argv) == 1:
+        usage()
+    else:
+        cmd = sys.argv[1]
+        args = sys.argv[2:]
+        
+        if cmd == "new":
+            if len(args) == 1:
+                project = new_project.NewProject(args[0])
+                project.create_project()
+            else:
+                print "Usage:"
+                print "  ace new <projectname>"
+                print "  projectname - the name for the new project directory."
+        elif not project_structure.is_in_project():
+            print >>sys.stderr, "Not in an ace project directory. Stopping."
+        elif cmd == "com" or cmd == "compile":
+            try:
+                contract = args[0]
+            except IndexError:
+                contract = ""
+            compiler = compile_contract.CompileContract(contract)
+            compiler.compile()
+        elif cmd == "con" or cmd == "contract":
+            if len(args) == 1:
+                contract = new_contract.NewContract(args[0])
+                contract.create_contract()
+            else:
+                print "Usage:"
+                print "  ace contract <name>"
+                print "  name - the name of the contract to create."
+        elif cmd == "tes" or cmd == "test":
+            try:
+                contract = args[0]
+            except IndexError:
+                contract = ""
+            test = test_contract.TestContract(contract)
+            test.run_tests()
+        else:
+            usage()
+
+if __name__ == '__main__':
+    main()
