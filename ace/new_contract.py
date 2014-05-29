@@ -26,10 +26,10 @@ class NewContract(object):
         intercaps = "".join([x.capitalize() for x in contract_name.split("_")])
         self.contract_classname = "Test" + intercaps
         test_dir = "test"
+        contract_dir = "contract"
         config = project_structure.load_config()
         contract_language = config["ace"]["default_language"]
         contract_ext = project_structure.language_extension(contract_language)
-        contract_dir = contract_language
         contract_filename = "%s.%s" % (self.contract_name, contract_ext)
         test_filename = config["ace"]["test_framework"] + ".py.template"
         self.test_template_filepath = os.path.join(test_dir, test_filename)

@@ -9,7 +9,7 @@ setup(name='ace',
       author_email='rob@robmyers.org',
       packages=['ace'],
       package_data={'ace': ['files/config/*.yaml',
-                            'files/serpent/*.se',
+                            'files/contract/contract.*',
                             'files/test/*.py.template']},
       scripts=['scripts/ace']
      )

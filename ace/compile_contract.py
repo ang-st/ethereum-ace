@@ -23,13 +23,13 @@ import project_structure
 # for when we support compiling more languages.
 
 class CompileContract(object):
-    """Run the test(s)"""
+    """Compile the contract(s)"""
     
     def __init__(self, contract):
         """Stash the contract filepath"""
         config = project_structure.load_config()
         self.contract_language = config["ace"]["default_language"]
-        self.contractdir = self.contract_language
+        self.contractdir = "contract"
         self.compile_command = config[self.contract_language]["compile_command"]
         contract = contract.strip()
         if contract:
