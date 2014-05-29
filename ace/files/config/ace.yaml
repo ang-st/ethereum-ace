@@ -2,6 +2,6 @@ ace:
     deploy_to_livenet: no 
     default_language: serpent
     test_framework: pytest
-    development_test_command: ACE_TEST_DEVELOPMENT=1 py.test %s
+    development_test_command: py.test %s
 serpent:
     compile_command: serpent compile %s > %s

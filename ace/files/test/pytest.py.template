@@ -1,11 +1,4 @@
-import os
-
-if os.environ['ACE_TEST_DEVELOPMENT']:
-    from ace.developer_test_class import AceTest
-elif os.environ['ACE_TEST_LOCAL_TESTNET']:
-    from ace.testnet_test_class import AceTest
-else:
-    raise "Invalid test environment." 
+from ace.acetest import AceTest
     
 class %CLASSNAME%(AceTest):
     
