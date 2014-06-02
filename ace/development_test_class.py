@@ -57,7 +57,7 @@ class Simulator(object):
                                     startgas=self.STARTGAS,
                                     endowment=endowment,
                                     code=code).sign(frm.key)
-        result, contract = processblock.apply_tx(self.genesis, _tx)
+        result, contract = processblock.apply_transaction(self.genesis, _tx)
         assert result
 
         self.nonce[frm] += 1
@@ -70,7 +70,7 @@ class Simulator(object):
                                        startgas=self.STARTGAS,
                                        to=to, value=value,
                                        data=encoded_data).sign(frm.key)
-        result, ans = processblock.apply_tx(self.genesis, _tx)
+        result, ans = processblock.apply_transaction(self.genesis, _tx)
         assert result
 
         self.nonce[frm] += 1
