@@ -23,7 +23,7 @@ class NewProject(object):
     # TODO: unified manifest-based copy & template system
     #       to share with contract creation.
     
-    DIRS = ["config", "hex", "log", "contract", "test"]
+    DIRS = ["config", "build", "log", "contract", "test"]
     FILES = ["config/ace.yaml", "config/development.yaml"]
     
     def __init__(self, project_name):

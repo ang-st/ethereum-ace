@@ -4,6 +4,7 @@ ace
 A command-line Ethereum development environment.
 
 By Rob Myers <rob@robmyers.org>
+Simulator code adapted from: https://github.com/EtherCasts/evm-sim/
 
 Dependencies
 ============

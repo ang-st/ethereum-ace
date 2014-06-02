@@ -15,12 +15,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import glob, os, re, subprocess, sys, yaml
+import serpent
 import project_structure
 
-# We call Serpent from the command line
-# rather than importing it and compiling directly.
-# This is so Serpent isn't a dependency
-# for when we support compiling more languages.
+# FIXME: compile lll as well as Serpent
 
 class CompileContract(object):
     """Compile the contract(s)"""
@@ -49,19 +47,40 @@ class CompileContract(object):
                                                   extension)
 
     def hex_filename(self, contract):
-        """Format up the contract filename"""
+        """Make the hex filename from the contract name"""
         if contract.endswith(".py"):
             contract = re.sub("test_", "", contract)
-        return project_structure.project_filepath("hex",
+        return project_structure.project_filepath("build",
                                                   contract,
                                                   ".hex")
+
+    def serpent_lll_filename(self, contract):
+        """Make the hex filename from the contract name"""
+        if contract.endswith(".py"):
+            contract = re.sub("test_", "", contract)
+        return project_structure.project_filepath("build",
+                                                  contract,
+                                                  ".lll")
+
+    def serpent_to_lll(self, filepath):
+        """Load the Serpent file and compile to lll"""
+        source = open(filepath).read()
+        ast = serpent.compiler.parse(source)
+        return serpent.rewriter.compile_to_lll(ast)
+        
+    def lll_to_hex(self, lll):
+        """Compile the lll to hex"""
+        return serpent.compiler.assemble(serpent.compiler.compile_lll(lll))
     
     def compile(self):
         """Compile the file"""
         for contract in self.contract_files:
             if os.path.exists(contract):
+                lllfile = self.serpent_lll_filename(contract)
                 hexfile = self.hex_filename(contract)
-                command = self.compile_command % (contract, hexfile)
-                subprocess.call(command, shell=True)
+                lll = self.serpent_to_lll(contract)
+                lllhex = self.lll_to_hex(lll)
+                open(lllfile, 'w').write(repr(lll))
+                open(hexfile, 'w').write(lllhex.encode('hex'))
             else:
                 print >>sys.stderr, "No such file: %s." % contract
