@@ -3,11 +3,7 @@ from ace.acetest import AceTest
 class %CLASSNAME%(AceTest):
     
     CONTRACT = "%SOURCEFILE%"
-    
-    def setup_method(self, method):
-        self.sim.reset()
-        self.contract = self.sim.load_contract(self.accounts["creator"],
-                                               self.code)
+    CREATOR = "creator"
     
     def test_do_nothing(self):
         data = []

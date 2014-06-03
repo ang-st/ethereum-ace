@@ -96,6 +96,7 @@ class LocalTestBaseClass(object):
     """Local test version of AceTest"""
     
     CONTRACT = ""
+    CREATOR = ""
     GAS_AMOUNT = 10**18
 
     @classmethod
@@ -107,3 +108,9 @@ class LocalTestBaseClass(object):
         for account in cls.accounts.keys():
             endowments[cls.accounts[account].address] = cls.GAS_AMOUNT
         cls.sim = Simulator(endowments)
+
+    
+    def setup_method(self, method):
+        self.sim.reset()
+        self.contract = self.sim.load_contract(self.accounts[self.CREATOR],
+                                               self.code)
