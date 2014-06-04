@@ -38,7 +38,7 @@ def usage():
     print "  compile [name] - Compile name, or all contracts if name absent."
 
 def main():
-    if len(sys.argv) == 1:
+    if len(sys.argv) == 1 or sys.argv[1] == "--help" or sys.argv[1] == "-h":
         usage()
     else:
         cmd = sys.argv[1]
