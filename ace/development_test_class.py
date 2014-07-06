@@ -6,7 +6,7 @@
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or 
+# the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -20,81 +20,31 @@
 from collections import Counter
 
 from pyethereum import transactions, blocks, processblock, utils
-import serpent
+import sim
 
-import project_structure
+import compile_contract, project_structure
 
 # processblock.debug = 1
 
 
-def load_serpent(filename):
-    return serpent.compile(open(filename).read())
+def load_source(filename):
+    if filename.endswith(".lll"):
+        return sim.compile_lll(filename)
+    else:
+        return sim.compile_serpent(filename)
 
-
-class Key(object):
-
-    def __init__(self, secret):
-        self.key = utils.sha3(secret)
-        self.address = utils.privtoaddr(self.key)
-
-
-class Simulator(object):
-
-    GASPRICE = 10**12
-    STARTGAS = 10000
-
-    def __init__(self, founders):
-        self.founders = founders
-        self.reset()
-
-    def reset(self):
-        self.genesis = blocks.genesis(self.founders)
-        self.nonce = Counter()
-
-    def load_contract(self, frm, code, endowment=0):
-        _tx = transactions.contract(nonce=self.nonce[frm],
-                                    gasprice=self.GASPRICE,
-                                    startgas=self.STARTGAS,
-                                    endowment=endowment,
-                                    code=code).sign(frm.key)
-        result, contract = processblock.apply_transaction(self.genesis, _tx)
-        assert result
-
-        self.nonce[frm] += 1
-        return contract
-
-    def tx(self, frm, to, value, data):
-        encoded_data = serpent.encode_datalist(data)
-        _tx = transactions.Transaction(nonce=self.nonce[frm],
-                                       gasprice=self.GASPRICE,
-                                       startgas=self.STARTGAS,
-                                       to=to, value=value,
-                                       data=encoded_data).sign(frm.key)
-        result, ans = processblock.apply_transaction(self.genesis, _tx)
-        assert result
-
-        self.nonce[frm] += 1
-        return serpent.decode_datalist(ans)
-
-    def get_storage_data(self, contract, index):
-        return self.genesis.get_storage_data(contract, index)
-
-    def get_storage_dict(self, contract):
-        return self.genesis.get_storage(contract).to_dict()
-
-    
 def get_development_accounts():
     config = project_structure.load_config("development")
     accounts = {}
     accounts_section = config["accounts"]
     for account in accounts_section.keys():
-        accounts[account] = Key(accounts_section[account])
+        accounts[account] = sim.Key(accounts_section[account])
     return accounts
 
 
 class LocalTestBaseClass(object):
     """Local test version of AceTest"""
-    
+
     CONTRACT = ""
     CREATOR = ""
     GAS_AMOUNT = 10**18
@@ -102,14 +52,13 @@ class LocalTestBaseClass(object):
     @classmethod
     def setup_class(cls):
         # Get keys from config
-        cls.code = load_serpent(cls.CONTRACT)
+        cls.code = load_source(cls.CONTRACT)
         endowments = {}
         cls.accounts = get_development_accounts()
         for account in cls.accounts.keys():
             endowments[cls.accounts[account].address] = cls.GAS_AMOUNT
-        cls.sim = Simulator(endowments)
+        cls.sim = sim.Simulator(endowments)
 
-    
     def setup_method(self, method):
         self.sim.reset()
         self.contract = self.sim.load_contract(self.accounts[self.CREATOR],

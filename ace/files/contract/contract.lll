@@ -1,0 +1,6 @@
+{
+  stop
+  (return 0 (lll
+    stop
+    0))
+}

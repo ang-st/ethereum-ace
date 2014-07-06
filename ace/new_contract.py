@@ -20,7 +20,7 @@ import project_structure
 class NewContract(object):
     """Create a new ethereum contract"""
     
-    def __init__(self, contract_name):
+    def __init__(self, contract_name, contract_language="serpent"):
         """Stash the contract details and generate various filepaths"""
         self.contract_name = os.path.splitext(contract_name)[0]
         intercaps = "".join([x.capitalize() for x in contract_name.split("_")])
@@ -28,7 +28,6 @@ class NewContract(object):
         test_dir = "test"
         contract_dir = "contract"
         config = project_structure.load_config()
-        contract_language = config["ace"]["default_language"]
         contract_ext = project_structure.language_extension(contract_language)
         contract_filename = "%s.%s" % (self.contract_name, contract_ext)
         test_filename = config["ace"]["test_framework"] + ".py.template"
@@ -45,7 +44,7 @@ class NewContract(object):
         """Check whether the contract already exists"""
         return (not os.path.exists(self.contract_filepath)) \
             and (not os.path.exists(self.test_filepath))
-
+    
     def create_file(self, infile, outfilepath):
         """Create the contract file"""
         template = infile.read()

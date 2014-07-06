@@ -23,8 +23,6 @@ class TestContract(object):
     def __init__(self, test):
         """Stash the test filepath"""
         config = project_structure.load_config()
-        contract_language = config["ace"]["default_language"]
-        contract_dir = "contract"
         self.test_command = config["ace"]["development_test_command"]
         test = test.strip()
         if test:

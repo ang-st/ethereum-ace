@@ -3,7 +3,7 @@
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or 
+# the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -17,8 +17,18 @@
 import inspect, glob, os, yaml
 from pkg_resources import resource_stream
 
-LANGUAGE_EXTENSION = {"serpent":"se"}
+LANGUAGE_EXTENSION = {"serpent":"se", "lll":"lll"}
+EXTENSION_LANGUAGE = {v:k for k, v in LANGUAGE_EXTENSION.iteritems()}
 ACE_CONFIG_PATH = "config/ace.yaml"
+
+def contract_language(filename, config):
+    """Get the language for the extension"""
+    extension = os.path.splitext(filename)[1]
+    if extension:
+        language = EXTENSION_LANGUAGE[extension[1:].strip().lower()]
+    else:
+        language = config["ace"]["default_language"]
+    return language
 
 def source_file_root():
     """Get the path to ace's file resources"""
@@ -68,7 +78,7 @@ def project_filepath(dirname, filename, kind, projectdir=False):
     filename = os.path.splitext(filename)[0]
     filename = os.path.basename(filename)
     return os.path.join(projectdir, dirname, "%s.%s" % (filename, kind))
-    
+
 def load_config(config_filename="ace"):
     """Load the given config file"""
     filebase = os.path.basename(os.path.splitext(config_filename)[0])

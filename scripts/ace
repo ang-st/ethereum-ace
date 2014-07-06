@@ -32,7 +32,8 @@ def usage():
     print "Usage:"
     print "  ace <command> [args]"
     print "Commands:"
-    print "  new <name> - Create a new project directory called 'name'."
+    print "  new <language> <name> - Create a new project called 'name'"
+    print "                          in the language l[ll] or s[erpent]."
     print "  contract <name> - Create a new contract and test using 'name'."
     print "  test [name] - Run name, or all tests if name absent.."
     print "  compile [name] - Compile name, or all contracts if name absent."
@@ -46,7 +47,20 @@ def main():
         
         if cmd == "new":
             if len(args) == 1:
-                project = new_project.NewProject(args[0])
+                language = config["ace"]["default_language"]
+                project = new_project.NewProject(args[0], language)
+                project.create_project()
+            if len(args) == 2:
+                language_spec = args[0]
+                if language_spec[0] == "l":
+                    language = "lll"
+                elif language_spec[0] == "s":
+                    language = "serpent"
+                else:
+                    print >>sys.stderr, \
+                        "Unknown language spec: %s" % language_spec
+                    syst.exit(-1)
+                project = new_project.NewProject(args[1], language)
                 project.create_project()
             else:
                 print "Usage:"
